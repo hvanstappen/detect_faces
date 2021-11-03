@@ -39,47 +39,42 @@ for jpg in files:
 		f.write(";")
 		f.write(jpg)
 		f.write("\n")
-		
+
 	# draw rectangle on faces
 	for face in face_locations:
 		# Reading an image
 		boximage = cv2.imread(jpgpath)
 		print(face)
-    
+
 		# Window name in which image is displayed
 		window_name = 'Image'
-  
+
 		# represents the top left corner of rectangle
 		start_point = (face[3], face[0])
-   
+
 		# represents the bottom right corner of rectangle
 		end_point = (face[1], face[2])
-   
+
 		# Green color in BGR
 		color = (0, 255, 0)
-   
+
 		# Line thickness of 2 px
 		thickness = 2
-   
+
 		# Using cv2.rectangle() method
 		# Draw a rectangle of black color of thickness 1 px
 		boximage = cv2.rectangle(boximage, start_point, end_point, color, thickness)
-   
-		# Displaying the image 
-		cv2.imshow(window_name, boximage) 
+
+		# Displaying the image
+		cv2.imshow(window_name, boximage)
 		cv2.waitKey(0)
 
 	# write result per image to csv
 	n = len(face_locations)
-	
+
 	i.write(str(jpg))
 	i.write(";")
 	i.write(str(n))
 	i.write("\n")
 
 	print(jpg)
-#	print(face_locations)
-
-
-# print(faces)
-	
