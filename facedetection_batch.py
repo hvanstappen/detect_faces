@@ -1,7 +1,6 @@
 import os
 import face_recognition
 import csv
-# import pandas as pd
 import argparse
 import cv2
 
