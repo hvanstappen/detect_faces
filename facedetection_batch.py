@@ -1,6 +1,12 @@
 # USAGE
-# python facedetection_batch -p path/to/input/images [-f detected_faces.csv -i detected_per_image.csv]
+# python facedetection_batch -p path/to/input/images -o pat/to/output/images [-f detected_faces.csv -i detected_per_image.csv]
 
+# to change the model, choose one of (model cnn is better but slower)
+	#face_locations = face_recognition.face_locations(image, model="cnn")
+	# face_locations = face_recognition.face_locations(image)
+# to preview the result, uncomment 
+	# cv2.imshow(window_name, boximage)
+	# cv2.waitKey(0)
 
 import os
 import face_recognition
@@ -10,17 +16,22 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--path", required=True,
+ap.add_argument("-p", "--inpath", required=True,
 	help="path to input images")
+ap.add_argument("-o", "--outpath", required=True,
+	help="path to output images")
 ap.add_argument("-f", "--faces_report", default="detected_faces.csv",
 	help="path to detected faces CSV file")
 ap.add_argument("-i", "--image_report", default="detected_per_image.csv",
 	help="path to faces per image CSV file")
+
 args = vars(ap.parse_args())
 
-path = args["path"]
+inpath = args["inpath"]
 
-files = os.listdir(path)
+files = os.listdir(inpath)
+
+outpath = args["outpath"]
 
 # csv with coordinates of detected faces
 f = open(args["faces_report"],'w')
@@ -28,14 +39,15 @@ f = open(args["faces_report"],'w')
 # csv with faces per image
 i = open(args["image_report"],'w')
 
+
 for jpg in files:
 
-	jpgpath = path+'/'+jpg
-	image = face_recognition.load_image_file(jpgpath)
+	jpginpath = inpath+'/'+jpg
+	image = face_recognition.load_image_file(jpginpath)
 
 	# choose an option, model cnn is better but slower
-	# face_locations = face_recognition.face_locations(image, model="cnn")
-	face_locations = face_recognition.face_locations(image)
+	face_locations = face_recognition.face_locations(image, model="cnn")
+	# face_locations = face_recognition.face_locations(image)
 
 	# write line for each detected face to csv
 	for face in face_locations:
@@ -45,9 +57,13 @@ for jpg in files:
 		f.write("\n")
 
 	# draw rectangle on faces
+	# make a copy
+	jpgoutpath = outpath+'/'+jpg
+	cv2.imwrite(jpgoutpath,image)
+	
 	for face in face_locations:
 		# Reading an image
-		boximage = cv2.imread(jpgpath)
+		boximage = cv2.imread(jpgoutpath)
 		print(face)
 
 		# Window name in which image is displayed
@@ -66,12 +82,13 @@ for jpg in files:
 		thickness = 2
 
 		# Using cv2.rectangle() method
-		# Draw a rectangle of black color of thickness 1 px
+		# Draw a rectangle of green color of thickness 2 px
 		boximage = cv2.rectangle(boximage, start_point, end_point, color, thickness)
 
 		# Displaying the image
-		cv2.imshow(window_name, boximage)
-		cv2.waitKey(0)
+		# cv2.imshow(window_name, boximage)
+		# cv2.waitKey(0)
+		cv2.imwrite(jpgoutpath,boximage)
 
 	# write result per image to csv
 	n = len(face_locations)
