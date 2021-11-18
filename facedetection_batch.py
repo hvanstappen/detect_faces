@@ -1,3 +1,7 @@
+# USAGE
+# python facedetection_batch -p path/to/input/images [-f detected_faces.csv -i detected_per_image.csv]
+
+
 import os
 import face_recognition
 import csv
